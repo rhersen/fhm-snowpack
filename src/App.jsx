@@ -8,7 +8,7 @@ function App() {
   const [cells, setCells] = useState([]);
 
   useEffect(async () => {
-    const response = await fetch('http://fohm.hersen.name');
+    const response = await fetch('https://secure.hersen.name/fohm');
     const data = await response.json();
     const { heading, columns, rows, cells } = data;
     setHeading(heading);

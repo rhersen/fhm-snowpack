@@ -74,6 +74,18 @@ function App() {
             )}
           </span>
         ))}
+
+        <span className="column-heading">förändring</span>
+        {columns.map((column, i) => (
+          <span className="cell">
+            {Math.round(
+              (100 *
+                week.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0)) /
+                prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) -
+                100,
+            )}
+          </span>
+        ))}
       </div>
     </div>
   );

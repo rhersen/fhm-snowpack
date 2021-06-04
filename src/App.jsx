@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  // Create the count state.
-  const [count, setCount] = useState(0);
-  // Create the counter (+1 every second).
-  useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1000);
-    return () => clearTimeout(timer);
-  }, [count, setCount]);
-  // Return the App component.
+  const [heading, setHeading] = useState('heading');
+  const [columns, setColumns] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [cells, setCells] = useState([]);
+
+  useEffect(async () => {
+    const response = await fetch('http://fohm.hersen.name');
+    const data = await response.json();
+    const { heading, columns, rows, cells } = data;
+    setHeading(heading);
+    setColumns(columns);
+    setRows(rows);
+    setCells(cells);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.jsx</code> and save to reload.
-        </p>
-        <p>
-          Page has been open for <code>{count}</code> seconds.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
+    <div>
+      <div className="table">
+        <span className="column-heading">{heading}</span>
+        {columns.map((column) => (
+          <span className="row-heading">{column.replace(/_/g, ' ')}</span>
+        ))}
+        {rows.slice(rows.length - 7).map((row, j) => (
+          <>
+            <span className="column-heading">{rows[rows.length - j - 1]}</span>
+            {columns.map((column, i) => (
+              <span className="cell">{cells[rows.length - j - 1][i]}</span>
+            ))}
+          </>
+        ))}
+      </div>
     </div>
   );
 }

@@ -28,32 +28,8 @@ function App() {
         {columns.map((column) => (
           <span className="row-heading">{column.replace(/_/g, ' ')}</span>
         ))}
-        {rows.slice(rows.length - 14).map((row, j) => (
-          <>
-            <span className="column-heading">
-              {rows[rows.length - j - 1].substr(5)}
-            </span>
-            {columns.map((column, i) => (
-              <span className="cell">{cells[rows.length - j - 1]?.[i]}</span>
-            ))}
-          </>
-        ))}
 
-        <span className="column-heading">∑ vecka</span>
-        {columns.map((column, i) => (
-          <span className="cell">
-            {week.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0)}
-          </span>
-        ))}
-
-        <span className="column-heading">∑ föreg v</span>
-        {columns.map((column, i) => (
-          <span className="cell">
-            {prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0)}
-          </span>
-        ))}
-
-        <span className="column-heading">vecka/dag</span>
+        <span className="column-heading">denna vecka</span>
         {columns.map((column, i) => (
           <span className="cell">
             {Math.round(
@@ -64,7 +40,7 @@ function App() {
           </span>
         ))}
 
-        <span className="column-heading">föreg/dag</span>
+        <span className="column-heading">föreg vecka</span>
         {columns.map((column, i) => (
           <span className="cell">
             {Math.round(

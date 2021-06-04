@@ -28,7 +28,7 @@ function App() {
           <>
             <span className="column-heading">{rows[rows.length - j - 1]}</span>
             {columns.map((column, i) => (
-              <span className="cell">{cells[rows.length - j - 1][i]}</span>
+              <span className="cell">{cells[rows.length - j - 1]?.[i]}</span>
             ))}
           </>
         ))}

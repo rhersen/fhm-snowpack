@@ -4,17 +4,68 @@ import population from './population';
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 
 const dataState = atom({ key: 'dataState', default: {} });
+
 const headingState = selector({
   key: 'headingState',
   get: ({ get }) => get(dataState).heading || 'heading',
 });
+
 const columnState = selector({
   key: 'columnState',
   get: ({ get }) => get(dataState).columns || [],
 });
+
 const cellState = selector({
   key: 'cellState',
   get: ({ get }) => get(dataState).cells || [],
+});
+
+const currentWeekState = selector({
+  key: 'currentWeekState',
+  get: ({ get }) => {
+    const week = get(cellState).slice(get(cellState).length - 7);
+
+    if (week.length === 0) {
+      return [];
+    }
+
+    return get(columnState).map(
+      (column, i) =>
+        week.map((cells) => cells?.[i]).reduce(sum, 0) /
+        7e-6 /
+        population[column],
+    );
+  },
+});
+
+const previousWeekState = selector({
+  key: 'previousWeekState',
+  get: ({ get }) => {
+    const prev = get(cellState).slice(
+      get(cellState).length - 14,
+      get(cellState).length - 7,
+    );
+
+    if (prev.length === 0) {
+      return [];
+    }
+
+    return get(columnState).map(
+      (column, i) =>
+        prev.map((cells) => cells?.[i]).reduce(sum, 0) /
+        7e-6 /
+        population[column],
+    );
+  },
+});
+
+const weeklyChangeState = selector({
+  key: 'weeklyChangeState',
+  get: ({ get }) => {
+    const curr = get(currentWeekState);
+    const prev = get(previousWeekState);
+    return get(columnState).map((column, i) => (100 * curr[i]) / prev[i] - 100);
+  },
 });
 
 function App() {
@@ -26,14 +77,6 @@ function App() {
     setData(data);
   }, []);
 
-  const week = useRecoilValue(cellState).slice(
-    useRecoilValue(cellState).length - 7,
-  );
-  const prev = useRecoilValue(cellState).slice(
-    useRecoilValue(cellState).length - 14,
-    useRecoilValue(cellState).length - 7,
-  );
-
   return (
     <div className="table">
       <span className="column-heading">{useRecoilValue(headingState)}</span>
@@ -42,43 +85,23 @@ function App() {
       ))}
 
       <span className="column-heading">denna vecka</span>
-      {useRecoilValue(columnState)
-        .map((column, i) =>
-          Math.round(
-            week.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) /
-              7e-6 /
-              population[column],
-          ),
-        )
-        .map(cellSpan)}
+      {useRecoilValue(currentWeekState).map(Math.round).map(cellSpan)}
 
       <span className="column-heading">föreg vecka</span>
-      {useRecoilValue(columnState)
-        .map((column, i) =>
-          Math.round(
-            prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) /
-              7e-6 /
-              population[column],
-          ),
-        )
-        .map(cellSpan)}
+      {useRecoilValue(previousWeekState).map(Math.round).map(cellSpan)}
 
       <span className="column-heading">förändring</span>
-      {useRecoilValue(columnState)
-        .map((column, i) =>
-          Math.round(
-            (100 * week.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0)) /
-              prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) -
-              100,
-          ),
-        )
-        .map(cellSpan)}
+      {useRecoilValue(weeklyChangeState).map(Math.round).map(cellSpan)}
     </div>
   );
 }
 
-function cellSpan(rounded) {
-  return <span className="cell">{rounded}</span>;
+function sum(a, b) {
+  return a + b;
+}
+
+function cellSpan(cellValue) {
+  return <span className="cell">{cellValue}</span>;
 }
 
 export default App;

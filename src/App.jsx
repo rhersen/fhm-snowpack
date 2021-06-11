@@ -5,16 +5,14 @@ import population from './population';
 function App() {
   const [heading, setHeading] = useState('heading');
   const [columns, setColumns] = useState([]);
-  const [rows, setRows] = useState([]);
   const [cells, setCells] = useState([]);
 
   useEffect(async () => {
     const response = await fetch('https://secure.hersen.name/fohm');
     const data = await response.json();
-    const { heading, columns, rows, cells } = data;
+    const { heading, columns, cells } = data;
     setHeading(heading);
     setColumns(columns);
-    setRows(rows);
     setCells(cells);
   }, []);
 

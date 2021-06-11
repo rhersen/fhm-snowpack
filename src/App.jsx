@@ -23,11 +23,9 @@ const cellState = selector({
 const currentWeekState = selector({
   key: 'currentWeekState',
   get: ({ get }) => {
-    const week = get(cellState).slice(get(cellState).length - 7);
+    const week = get(cellState).slice(-7);
 
-    if (week.length === 0) {
-      return [];
-    }
+    if (!week.length) return [];
 
     return get(columnState).map(
       (column, i) =>
@@ -41,14 +39,9 @@ const currentWeekState = selector({
 const previousWeekState = selector({
   key: 'previousWeekState',
   get: ({ get }) => {
-    const prev = get(cellState).slice(
-      get(cellState).length - 14,
-      get(cellState).length - 7,
-    );
+    const prev = get(cellState).slice(-14, -7);
 
-    if (prev.length === 0) {
-      return [];
-    }
+    if (!prev.length) return [];
 
     return get(columnState).map(
       (column, i) =>
@@ -73,8 +66,7 @@ function App() {
 
   useEffect(async () => {
     const response = await fetch('https://secure.hersen.name/fohm');
-    const data = await response.json();
-    setData(data);
+    setData(await response.json());
   }, []);
 
   return (

@@ -42,40 +42,43 @@ function App() {
       ))}
 
       <span className="column-heading">denna vecka</span>
-      {useRecoilValue(columnState).map((column, i) => (
-        <span className="cell">
-          {Math.round(
+      {useRecoilValue(columnState)
+        .map((column, i) =>
+          Math.round(
             week.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) /
               7e-6 /
               population[column],
-          )}
-        </span>
-      ))}
+          ),
+        )
+        .map(cellSpan)}
 
       <span className="column-heading">föreg vecka</span>
-      {useRecoilValue(columnState).map((column, i) => (
-        <span className="cell">
-          {Math.round(
+      {useRecoilValue(columnState)
+        .map((column, i) =>
+          Math.round(
             prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) /
               7e-6 /
               population[column],
-          )}
-        </span>
-      ))}
+          ),
+        )
+        .map(cellSpan)}
 
       <span className="column-heading">förändring</span>
       {useRecoilValue(columnState)
-        .map(
-          (column, i) =>
+        .map((column, i) =>
+          Math.round(
             (100 * week.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0)) /
-            prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0),
+              prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) -
+              100,
+          ),
         )
-        .map((percent) => Math.round(percent - 100))
-        .map((rounded) => (
-          <span className="cell">{rounded}</span>
-        ))}
+        .map(cellSpan)}
     </div>
   );
+}
+
+function cellSpan(rounded) {
+  return <span className="cell">{rounded}</span>;
 }
 
 export default App;

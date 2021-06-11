@@ -52,16 +52,17 @@ function App() {
         ))}
 
         <span className="column-heading">förändring</span>
-        {columns.map((column, i) => (
-          <span className="cell">
-            {Math.round(
+        {columns
+          .map(
+            (column, i) =>
               (100 *
                 week.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0)) /
-                prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0) -
-                100,
-            )}
-          </span>
-        ))}
+              prev.map((cells) => cells?.[i]).reduce((a, b) => a + b, 0),
+          )
+          .map((percent) => Math.round(percent - 100))
+          .map((rounded) => (
+            <span className="cell">{rounded}</span>
+          ))}
       </div>
     </div>
   );

@@ -4,9 +4,18 @@ import population from './population';
 import { atom, selector, useRecoilState, useRecoilValue } from 'recoil';
 
 const dataState = atom({ key: 'dataState', default: {} });
-const headingState = selector({ key: 'headingState', get: ({ get }) => get(dataState).heading });
-const columnState = selector({ key: 'columnState', get: ({ get }) => get(dataState).columns });
-const cellState = selector({ key: 'cellState', get: ({ get }) => get(dataState).cells });
+const headingState = selector({
+  key: 'headingState',
+  get: ({ get }) => get(dataState).heading || 'heading',
+});
+const columnState = selector({
+  key: 'columnState',
+  get: ({ get }) => get(dataState).columns || [],
+});
+const cellState = selector({
+  key: 'cellState',
+  get: ({ get }) => get(dataState).cells || [],
+});
 
 function App() {
   const [, setData] = useRecoilState(dataState);
